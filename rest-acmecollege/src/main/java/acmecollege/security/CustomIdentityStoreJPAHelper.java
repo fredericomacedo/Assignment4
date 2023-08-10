@@ -57,13 +57,13 @@ public class CustomIdentityStoreJPAHelper {
          *  
          */
         try {
-            TypedQuery<SecurityUser> query = em.createQuery("SELECT secureUser FROM SecurityUser secureUser WHERE secureUser.username = :param1",
-                SecurityUser.class).setParameter("param1", username);
+            TypedQuery<SecurityUser> query = em.createNamedQuery("SecurityUser.userByName", SecurityUser.class)
+                .setParameter("param1", username);
             user = query.getSingleResult();
             LOG.debug("SecurityUser found= {}", user);
         }
-        catch (Exception e) {
-        	LOG.debug("SecurityUser findUserByName failed: " + e.getMessage());
+        catch (NoResultException e) {
+            LOG.debug("SecurityUser findUserByName failed: {}", e.getMessage());
         }
         return user;
     }
