@@ -9,7 +9,7 @@
  *   041029397, Frederico Lucio, Macedo
  *   041046587, Natalia, Pirath  
  *   041042876, Tongwe, Kasaji 
- *   studentId, firstName, lastName (as from ACSIS) 
+ *   041025651, Daniel, Barboza 
  */
 package acmecollege.rest.resource;
 
@@ -31,6 +31,7 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -94,6 +95,28 @@ public class StudentResource {
         }
         return response;
     }
+    
+    //End point to delete student by id (tested by postman)
+    @DELETE
+    @RolesAllowed({ADMIN_ROLE})
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response deleteStudentById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
+        LOG.debug("Deleting student with id " + id);
+        
+        try {
+            service.deleteStudentById(id);
+            return Response.status(Status.NO_CONTENT).build(); // Return 204 No Content on successful deletion
+        } catch (Exception e) {
+            LOG.error("Error deleting student: " + e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error deleting student with id: " + id).build();
+        }
+    }
+
+    
+    
+    
+    
+    
 
     @POST
     @RolesAllowed({ADMIN_ROLE})
