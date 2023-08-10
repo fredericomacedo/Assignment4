@@ -4,12 +4,11 @@
  * @author Teddy Yap
  * @author Mike Norman
  * 
- * Updated by:  Group NN
+ * Updated by:  Group 07
+ *   041029397, Frederico Lucio, Macedo
+ *   041046587, Natalia, Pirath  
+ *   041042876, Tongwe, Kasaji 
  *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- * 
  */
 package acmecollege.security;
 
@@ -46,7 +45,7 @@ public class CustomIdentityStoreJPAHelper {
     public SecurityUser findUserByName(String username) {
         LOG.debug("find a SecurityUser by name = {}", username);
         SecurityUser user = null;
-        /* TODO CISJPAH01 - 
+        /* DONE CISJPAH01 - 
          *  Call the entity manager's createNamedQuery() method to call a named query on SecurityUser
          *  The named query should be labeled "SecurityUser.userByName" and accepts a parameter called "param1"
          *  
