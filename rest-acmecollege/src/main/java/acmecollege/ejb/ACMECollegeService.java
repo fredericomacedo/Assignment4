@@ -63,6 +63,8 @@ import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
 import acmecollege.entity.StudentClub;
 
+import acmecollege.entity.Course;
+
 @SuppressWarnings("unused")
 
 /**
@@ -298,6 +300,46 @@ public class ACMECollegeService implements Serializable {
             em.flush();
         }
         return clubMembershipToBeUpdated;
+    }
+    
+    //Code implemented to support CourseResource
+ // Get all courses
+    public List<Course> getAllCourses() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Course> cq = cb.createQuery(Course.class);
+        cq.select(cq.from(Course.class));
+        return em.createQuery(cq).getResultList();
+    }
+
+    // Get course by ID
+    public Course getCourseById(int id) {
+        return em.find(Course.class, id);
+    }
+    
+    @Transactional
+    public Course persistCourse(Course newCourse) {
+        em.persist(newCourse);
+        return newCourse;
+    }
+
+    @Transactional
+    public Course updateCourseById(int id, Course courseWithUpdates) {
+        Course courseToBeUpdated = getCourseById(id);
+        if (courseToBeUpdated != null) {
+            em.refresh(courseToBeUpdated);
+            em.merge(courseWithUpdates);
+            em.flush();
+        }
+        return courseToBeUpdated;
+    }
+
+    @Transactional
+    public void deleteCourseById(int id) {
+        Course course = getCourseById(id);
+        if (course != null) {
+            em.refresh(course);
+            em.remove(course);
+        }
     }
     
 }
