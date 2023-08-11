@@ -5,11 +5,11 @@
  * @author Shariar (Shawn) Emami
  * @date August 28, 2022
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ * Updated by:  Group 07
+ *   041029397, Frederico Lucio, Macedo
+ *   041046587, Natalia, Pirath  
+ *   041042876, Tongwe, Kasaji 
+ *   041025651, Daniel, Barboza 
  * 
  */
 package acmecollege.entity;
@@ -28,6 +28,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("unused")
 
 /**
@@ -36,12 +38,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "course")
 @NamedQuery(name = Course.ALL_COURSES_QUERY, query = "SELECT c FROM Course c")
+@NamedQuery(name = Course.QUERY_COURSE_BY_ID, query = "SELECT c FROM Course c where c.id = :param1")
 @AttributeOverride(name = "id", column = @Column(name = "course_id"))
 public class Course extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
     public static final String ALL_COURSES_QUERY = "Course.findAll";
-
+    public static final String QUERY_COURSE_BY_ID = "Course.findAllByID";
 	@Basic(optional = false)
 	@Column(name = "course_code", nullable = false, length = 7)
 	private String courseCode;
@@ -65,7 +68,8 @@ public class Course extends PojoBase implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "online",  nullable = false)
 	private byte online;
-
+	// Simplify JSON body, skip CourseRegistrations
+    @JsonIgnore
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "course")
 	private Set<CourseRegistration> courseRegistrations = new HashSet<>();
 

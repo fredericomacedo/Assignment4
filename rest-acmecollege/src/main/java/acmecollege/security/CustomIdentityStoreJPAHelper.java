@@ -4,12 +4,11 @@
  * @author Teddy Yap
  * @author Mike Norman
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- * 
+ * Updated by:  Group 07
+ *   041029397, Frederico Lucio, Macedo
+ *   041046587, Natalia, Pirath  
+ *   041042876, Tongwe, Kasaji 
+ *   041025651, Daniel, Barboza 
  */
 package acmecollege.security;
 
@@ -46,7 +45,7 @@ public class CustomIdentityStoreJPAHelper {
     public SecurityUser findUserByName(String username) {
         LOG.debug("find a SecurityUser by name = {}", username);
         SecurityUser user = null;
-        /* TODO CISJPAH01 - 
+        /* DONE CISJPAH01 - 
          *  Call the entity manager's createNamedQuery() method to call a named query on SecurityUser
          *  The named query should be labeled "SecurityUser.userByName" and accepts a parameter called "param1"
          *  
@@ -57,13 +56,13 @@ public class CustomIdentityStoreJPAHelper {
          *  
          */
         try {
-            TypedQuery<SecurityUser> query = em.createQuery("SELECT secureUser FROM SecurityUser secureUser WHERE secureUser.username = :param1",
-                SecurityUser.class).setParameter("param1", username);
+            TypedQuery<SecurityUser> query = em.createNamedQuery("SecurityUser.userByName", SecurityUser.class)
+                .setParameter("param1", username);
             user = query.getSingleResult();
             LOG.debug("SecurityUser found= {}", user);
         }
-        catch (Exception e) {
-        	LOG.debug("SecurityUser findUserByName failed: " + e.getMessage());
+        catch (NoResultException e) {
+            LOG.debug("SecurityUser findUserByName failed: {}", e.getMessage());
         }
         return user;
     }

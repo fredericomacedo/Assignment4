@@ -4,12 +4,12 @@
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
- *
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ * 
+ * Updated by:  Group 07
+ *   041029397, Frederico Lucio, Macedo
+ *   041046587, Natalia, Pirath  
+ *   041042876, Tongwe, Kasaji 
+ *   041025651, Daniel, Barboza 
  *
  */
 package acmecollege.entity;
@@ -25,6 +25,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @SuppressWarnings("unused")
@@ -33,6 +35,13 @@ import javax.persistence.Table;
  * Role class used for (JSR-375) Java EE Security authorization/authentication
  */
 //TODO SR01 - Make this into JPA entity and add all necessary annotations
+@NamedQueries({
+    @NamedQuery(name = "SecurityRole.findByName",
+                query = "SELECT s FROM SecurityRole s WHERE s.roleName = :roleName"),
+    @NamedQuery(name = "SecurityRole.findUserByStudentId",
+                query = "SELECT su FROM SecurityUser su JOIN su.roles r WHERE su.student.id = :studentId")
+})
+
 @Entity
 @Table(name = "security_role")
 public class SecurityRole implements Serializable {
