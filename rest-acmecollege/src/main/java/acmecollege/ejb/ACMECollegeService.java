@@ -6,12 +6,11 @@
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *
+ * Updated by:  Group 07
+ *   041029397, Frederico Lucio, Macedo
+ *   041046587, Natalia, Pirath  
+ *   041042876, Tongwe, Kasaji 
+ *   041025651, Daniel, Barboza 
  */
 package acmecollege.ejb;
 
@@ -63,6 +62,8 @@ import acmecollege.entity.SecurityRole;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
 import acmecollege.entity.StudentClub;
+
+import acmecollege.entity.Course;
 
 @SuppressWarnings("unused")
 
@@ -123,7 +124,13 @@ public class ACMECollegeService implements Serializable {
         String pwHash = pbAndjPasswordHash.generate(DEFAULT_USER_PASSWORD.toCharArray());
         userForNewStudent.setPwHash(pwHash);
         userForNewStudent.setStudent(newStudent);
-        SecurityRole userRole = /* TODO ACMECS01 - Use NamedQuery on SecurityRole to find USER_ROLE */ null;
+        
+        /* DONE ACMECS01 - Use NamedQuery on SecurityRole to find USER_ROLE */
+        // Using the named query to fetch the USER_ROLE FOR ToDo ACMECS01
+        TypedQuery<SecurityRole> query = em.createNamedQuery("SecurityRole.findByName", SecurityRole.class);
+        query.setParameter("roleName", "USER_ROLE");
+        SecurityRole userRole =  query.getSingleResult();
+        
         userForNewStudent.getRoles().add(userRole);
         userRole.getUsers().add(userForNewStudent);
         em.persist(userForNewStudent);
@@ -180,13 +187,16 @@ public class ACMECollegeService implements Serializable {
     @Transactional
     public void deleteStudentById(int id) {
         Student student = getStudentById(id);
+        
+        /* DONE ACMECS02 - Use NamedQuery on SecurityRole to find this related Student
+        so that when we remove it, the relationship from SECURITY_USER table
+        is not dangling
+         */
         if (student != null) {
             em.refresh(student);
-            TypedQuery<SecurityUser> findUser = 
-                /* TODO ACMECS02 - Use NamedQuery on SecurityRole to find this related Student
-                   so that when we remove it, the relationship from SECURITY_USER table
-                   is not dangling
-                */ null;
+         // Using the named query to fetch the SecurityUser related to the student
+            TypedQuery<SecurityUser> findUser = em.createNamedQuery("SecurityRole.findUserByStudentId", SecurityUser.class);
+            findUser.setParameter("studentId", id);
             SecurityUser sUser = findUser.getSingleResult();
             em.remove(sUser);
             em.remove(student);
@@ -290,6 +300,46 @@ public class ACMECollegeService implements Serializable {
             em.flush();
         }
         return clubMembershipToBeUpdated;
+    }
+    
+    //Code implemented to support CourseResource
+ // Get all courses
+    public List<Course> getAllCourses() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Course> cq = cb.createQuery(Course.class);
+        cq.select(cq.from(Course.class));
+        return em.createQuery(cq).getResultList();
+    }
+
+    // Get course by ID
+    public Course getCourseById(int id) {
+        return em.find(Course.class, id);
+    }
+    
+    @Transactional
+    public Course persistCourse(Course newCourse) {
+        em.persist(newCourse);
+        return newCourse;
+    }
+
+    @Transactional
+    public Course updateCourseById(int id, Course courseWithUpdates) {
+        Course courseToBeUpdated = getCourseById(id);
+        if (courseToBeUpdated != null) {
+            em.refresh(courseToBeUpdated);
+            em.merge(courseWithUpdates);
+            em.flush();
+        }
+        return courseToBeUpdated;
+    }
+
+    @Transactional
+    public void deleteCourseById(int id) {
+        Course course = getCourseById(id);
+        if (course != null) {
+            em.refresh(course);
+            em.remove(course);
+        }
     }
     
 }
