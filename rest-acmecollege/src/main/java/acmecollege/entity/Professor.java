@@ -26,10 +26,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @SuppressWarnings("unused")
 
@@ -50,8 +53,15 @@ import javax.persistence.Transient;
 @AttributeOverride(name = "id", column = @Column(name = "professor_id"))
 //Hint - PojoBase is inherited by any entity with integer as their primary key.
 //Hint - PojoBaseCompositeKey is inherited by any entity with a composite key as their primary key.
+@NamedQueries({
+	@NamedQuery(name = Professor.ALL_PROFESSORS_QUERY, query = "SELECT p FROM Professor p"),
+	@NamedQuery(name = Professor.PROFESSOR_BY_ID, query = "SELECT p FROM Professor p WHERE p.id = :param1")
+})
 public class Professor extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	public static final String ALL_PROFESSORS_QUERY = "Professor.getAllProfessors";
+	public static final String PROFESSOR_BY_ID = "Professor.getProfessorById";
 
 	// Hint - @Basic(optional = false) is used when the object cannot be null.
 	// Hint - @Basic or none can be used if the object can be null.
@@ -83,6 +93,7 @@ public class Professor extends PojoBase implements Serializable {
 	// Hint - @OneToMany option cascade will be ignored if not added, meaning no cascade effect.
 	// Hint - @OneToMany option fetch should be lazy to prevent eagerly initializing all the data.
 	@OneToMany(cascade=CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "professor")
+	@JsonIgnore
 	// Hint - java.util.Set is used as a collection, however List could have been used as well.
 	// Hint - java.util.Set will be unique and also possibly can provide better get performance with HashCode.
 	private Set<CourseRegistration> courseRegistrations = new HashSet<>();
