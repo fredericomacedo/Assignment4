@@ -5,11 +5,11 @@
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ * Updated by:  Group 07
+ *   041029397, Frederico Lucio, Macedo
+ *   041046587, Natalia, Pirath  
+ *   041042876, Tongwe, Kasaji 
+ *   041025651, Daniel, Barboza 
  * 
  */
 package acmecollege.entity;
@@ -31,6 +31,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -45,9 +46,10 @@ import acmecollege.rest.serializer.SecurityRoleSerializer;
  * User class used for (JSR-375) Java EE Security authorization/authentication
  */
 
-//TODO - Make this into JPA entity and add all the necessary annotations
+//DONE - Make this into JPA entity and add all the necessary annotations
 @Entity
 @Table(name = "security_user")
+@NamedQuery(name = "SecurityUser.userByName",query = "SELECT su FROM SecurityUser su WHERE su.username = :param1")
 public class SecurityUser implements Serializable, Principal {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
@@ -102,7 +104,7 @@ public class SecurityUser implements Serializable, Principal {
         this.pwHash = pwHash;
     }
 
-    // TODO SU01 - Setup custom JSON serializer
+    // DONE SU01 - Setup custom JSON serializer
     @JsonSerialize(using = SecurityRoleSerializer.class)
     public Set<SecurityRole> getRoles() {
         return roles;
