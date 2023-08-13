@@ -67,6 +67,7 @@ public abstract class StudentClub extends PojoBase implements Serializable {
 	private String name;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "club", orphanRemoval = true)
+	@JsonIgnore
 	private Set<ClubMembership> clubMemberships = new HashSet<>();
 
     @Transient
@@ -86,7 +87,7 @@ public abstract class StudentClub extends PojoBase implements Serializable {
     public Set<ClubMembership> getClubMemberships() {
         return clubMemberships;
     }
-
+    @JsonIgnore
 	public void setClubMembership(Set<ClubMembership> clubMemberships) {
 		this.clubMemberships = clubMemberships;
 	}

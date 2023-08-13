@@ -72,6 +72,7 @@ public class MembershipCardResource {
     @RolesAllowed({ADMIN_ROLE})
     public Response addMembershipCard(MembershipCard newCard) {
         Response response = null;
+        
         MembershipCard card = service.persistCard(newCard);
         // Build a SecurityUser linked to the new student
         response = Response.ok(card).build();

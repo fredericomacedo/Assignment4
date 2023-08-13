@@ -29,6 +29,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @SuppressWarnings("unused")
 
 /**
@@ -67,7 +69,7 @@ public class MembershipCard extends PojoBase implements Serializable {
 		this.owner = owner;
 		this.signed = signed;
 	}
-
+	@JsonBackReference(value="membersip")
 	public ClubMembership getMembership() {
 		return membership;
 	}
@@ -75,7 +77,7 @@ public class MembershipCard extends PojoBase implements Serializable {
 	public void setClubMembership(ClubMembership membership) {
 		this.membership = membership;
 	}
-
+	@JsonBackReference(value="student")
 	public Student getOwner() {
 		return owner;
 	}

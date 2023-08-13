@@ -418,6 +418,7 @@ public class ACMECollegeService implements Serializable {
     //For Membership Card
     @Transactional
     public MembershipCard persistCard(MembershipCard newCard) {
+    	
         em.persist(newCard);
         return newCard;
     }
