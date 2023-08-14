@@ -1,6 +1,7 @@
 package acmecollege.rest.resource;
 
 import acmecollege.ejb.ACMECollegeService;
+import acmecollege.entity.ClubMembership;
 import acmecollege.entity.MembershipCard;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;

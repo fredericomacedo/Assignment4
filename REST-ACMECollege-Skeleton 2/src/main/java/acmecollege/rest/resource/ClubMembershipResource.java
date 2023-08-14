@@ -84,19 +84,19 @@ public class ClubMembershipResource {
 
     @POST
     @RolesAllowed({ADMIN_ROLE})
-    public Response addMembership(ClubMembership newMembership) {
-
-        LOG.debug("Deleting club membership with id = {}", newMembership.getId());
+    public Response addClubMembership(ClubMembership newClubMembership) {
+		LOG.debug("creating a new club Membership...");
         Response response = null;
-        ClubMembership newClubMembership = service.persistClubMembership(newMembership);
-
-        response = Response.ok(newClubMembership).build();
-        return response;
-    }
+        ClubMembership newCMWithIdTimestamps = service.persistClubMembership(newClubMembership);
+        response = Response.ok(newCMWithIdTimestamps).build();
+		return response;
+		
+	}
 
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
-    public Response deleteClubMembershipById(int id) {
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response deleteClubMembershipById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
         LOG.debug("Deleting club membership with id = {}", id);
         service.deleteClubMembershipById(id);
         return Response.ok(id).build();
