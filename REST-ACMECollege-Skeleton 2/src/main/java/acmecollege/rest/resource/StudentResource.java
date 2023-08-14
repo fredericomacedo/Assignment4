@@ -1,5 +1,5 @@
 /**
- * File:  PersonResource.java Course materials (23W) CST 8277
+ * File:  StudentResource.java Course materials (23W) CST 8277
  *
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
