@@ -4,15 +4,12 @@
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
  * @date August 28, 2022
- * @author Mike Norman
- * @date 2020 04
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- * 
+ * Updated by:  Group 07
+ *   041029397, Frederico Lucio, Macedo
+ *   041046587, Natalia, Pirath  
+ *   041042876, Tongwe, Kasaji 
+ *   041025651, Daniel, Barboza 
  */
 package acmecollege.entity;
 
