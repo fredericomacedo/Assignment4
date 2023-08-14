@@ -12,20 +12,6 @@
  *   041042876, Tongwe, Kasaji 
  *   041025651, Daniel, Barboza 
  */
-/**
- * File:  ACMEColegeService.java
- * Course materials (23W) CST 8277
- *
- * @author Teddy Yap
- * @author Shariar (Shawn) Emami
- * @author (original) Mike Norman
- * 
- * Updated by:  Group 07
- *   041029397, Frederico Lucio, Macedo
- *   041046587, Natalia, Pirath  
- *   041042876, Tongwe, Kasaji 
- *   041025651, Daniel, Barboza 
- */
 package acmecollege.ejb;
 
 import static acmecollege.entity.StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME;
@@ -229,6 +215,25 @@ public class ACMECollegeService implements Serializable {
         specificStudentClubQuery.setParameter(PARAM1, id);
         return specificStudentClubQuery.getSingleResult();
     }
+    
+    @Transactional
+	public CourseRegistration addNewCourseRegistrationForStudent(int studentId,
+			int courseId) {
+    	LOG.debug("inside course reg for student...");
+    	//check student and course that they both exist
+    	Student studentToBeUpdated = em.find(Student.class, studentId);
+    	Course courseToBeUpdated = em.find(Course.class, courseId);
+    	CourseRegistration cr = null;
+    	if (studentToBeUpdated !=null && courseToBeUpdated != null) {
+        	em.refresh(studentToBeUpdated);
+        	em.refresh(courseToBeUpdated);
+    		cr = new CourseRegistration();
+    		cr.setStudent(studentToBeUpdated);
+    		cr.setCourse(courseToBeUpdated);
+    		em.merge(cr);
+    	} 
+    	return cr;
+	}
     
     // These methods are more generic.
 
@@ -437,5 +442,51 @@ public class ACMECollegeService implements Serializable {
         return cardById;
 
     }
+    
+	public List<MembershipCard> getMembershipCards() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<MembershipCard> cq = cb.createQuery(MembershipCard.class);
+        cq.select(cq.from(MembershipCard.class));
+        return em.createQuery(cq).getResultList();
+	}
+	
+	//Only a ‘USER_ROLE’ user can read their own MembershipCard
+	public MembershipCard getMembershipCardById(int id) {
+        return em.find(MembershipCard.class, id);
+	}
+	
+    @Transactional
+	public MembershipCard persistMembershipCardForStudent(int studentId, int membershipID) {
+    	
+    	LOG.debug("inside persistMembershipCardForStudent...");
+    	//check student and club membership that they both exist
+    	Student studentToBeUpdated = em.find(Student.class, studentId);
+    	ClubMembership clubmembership = em.find(ClubMembership.class, membershipID);
+    	
+    	MembershipCard mc = null;
+    	if (studentToBeUpdated !=null && clubmembership != null) {
+	    	em.refresh(studentToBeUpdated);	
+	    	em.refresh(clubmembership);	
+
+    		mc = new MembershipCard(clubmembership, studentToBeUpdated, (byte) 0);
+    		em.persist(mc);
+        	return mc;
+    	} 
+        return null;
+	}
+    
+    @Transactional
+	public MembershipCard deleteMembershipCardById(int mId) {
+    	LOG.debug("inside deleteMembershipCardById...");
+    	MembershipCard mc = getMembershipCardById(mId);
+        if (mc != null) {
+            em.refresh(mc);
+    		CriteriaBuilder builder = em.getCriteriaBuilder();
+    		//course registration will be removed if course is deleted because remove will be cascaded
+            em.remove(mc);
+            return mc;
+        }
+        return null;		
+	}
       
 }

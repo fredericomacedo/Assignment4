@@ -26,7 +26,15 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -36,6 +44,7 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.soteria.WrappingCallerPrincipal;
 
 import acmecollege.ejb.ACMECollegeService;
+import acmecollege.entity.CourseRegistration;
 import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
@@ -87,10 +96,20 @@ public class StudentResource {
         }
         return response;
     }
-
+    
+    @DELETE
+    @RolesAllowed({ADMIN_ROLE})
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response deleteStudentById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
+        LOG.debug("Deleting course with id = {}", id);
+        service.deleteStudentById(id);
+        return Response.ok(id).build();
+    }
+    
     @POST
     @RolesAllowed({ADMIN_ROLE})
     public Response addPerson(Student newStudent) {
+		LOG.debug("Adding new student...");
         Response response = null;
         Student newStudentWithIdTimestamps = service.persistStudent(newStudent);
         // Build a SecurityUser linked to the new student
@@ -103,18 +122,22 @@ public class StudentResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(STUDENT_COURSE_PROFESSOR_RESOURCE_PATH)
     public Response updateProfessorForStudentCourse(@PathParam("studentId") int studentId, @PathParam("courseId") int courseId, Professor newProfessor) {
-        Response response = null;
+		LOG.debug("Update Professor For StudentCourse...");
+    	Response response = null;
         Professor professor = service.setProfessorForStudentCourse(studentId, courseId, newProfessor);
         response = Response.ok(professor).build();
         return response;
     }
-
-    @DELETE
+    
+    @POST
     @RolesAllowed({ADMIN_ROLE})
-    @Path(RESOURCE_PATH_ID_PATH)
-    public Response deleteStudentById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
-        LOG.debug("Deleting course with id = {}", id);
-        service.deleteStudentById(id);
-        return Response.ok(id).build();
+    @Path("/{studentId}/course/{courseId}/courseregistration")
+    public Response registerStudentForCourse(@PathParam("studentId") int studentId, @PathParam("courseId") int courseId) {
+		LOG.debug("Inside register student for course");
+    	Response response = null;
+    	CourseRegistration cr = service.addNewCourseRegistrationForStudent(studentId, courseId);
+    	if(cr!=null) response = Response.ok(cr).build();
+    	else response = Response.status(Status.NO_CONTENT).build();
+    	return response;
     }
 }
